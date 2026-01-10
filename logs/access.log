@@ -1,0 +1,9 @@
+GET /player/full-scan/8422452244 200 2679.708 ms - cache:MISS
+GET /player/owned-gamepasses/156 404 1696.779 ms - cache:MISS
+GET /game/full-scan/606849621 500 1175.028 ms - cache:MISS
+GET /game/full-scan/606849621 500 1425.734 ms - cache:MISS
+GET /game/full-scan/606849621 200 4.263 ms - cache:HIT
+GET /game/full-scan/606849621 500 1384.721 ms - cache:MISS
+GET /game/full-scan/606849621 500 1476.655 ms - cache:MISS
+GET /game/full-scan/606849621 500 1293.794 ms - cache:MISS
+GET /game/full-scan/606849621 500 1312.863 ms - cache:MISS
