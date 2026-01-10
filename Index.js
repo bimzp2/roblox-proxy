@@ -531,3 +531,5 @@ app.listen(PORT, () => {
 process.on('unhandledRejection', (err) => {
     log('error', 'Unhandled rejection', { error: err.message, stack: err.stack })
 })
+
+module.exports = app
