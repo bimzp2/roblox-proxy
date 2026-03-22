@@ -124,20 +124,23 @@ const ENDPOINT_CATS = [
   { icon: <IconBot size={18} />, name: 'AI Chat', routes: ['/api/chat/ai', '/api/chat/ai/:msg'] },
 ]
 
-const CODE_TABS = [
-  {
-    label: 'cURL',
-    code: `<span class="hl-m">curl</span> <span class="hl-u">https://your-domain.com/roblox/user/1/complete</span>\n\n<span class="hl-b">{</span>\n  <span class="hl-k">"user"</span>: <span class="hl-b">{</span> <span class="hl-k">"name"</span>: <span class="hl-s">"Roblox"</span>, <span class="hl-k">"id"</span>: <span class="hl-n">1</span> <span class="hl-b">}</span>,\n  <span class="hl-k">"presence"</span>: <span class="hl-b">{</span> <span class="hl-k">"type"</span>: <span class="hl-n">0</span> <span class="hl-b">}</span>,\n  <span class="hl-k">"followers"</span>: <span class="hl-b">{</span> <span class="hl-k">"count"</span>: <span class="hl-n">5843291</span> <span class="hl-b">}</span>\n<span class="hl-b">}</span>`
-  },
-  {
-    label: 'JavaScript',
-    code: `<span class="hl-m">const</span> <span class="hl-k">res</span> = <span class="hl-m">await</span> <span class="hl-u">fetch</span>(<span class="hl-s">'/roblox/user/1/complete'</span>)\n<span class="hl-m">const</span> <span class="hl-k">data</span> = <span class="hl-m">await</span> res.<span class="hl-u">json</span>()\n\nconsole.<span class="hl-u">log</span>(data.<span class="hl-k">user</span>.<span class="hl-k">name</span>)  <span class="hl-c">// "Roblox"</span>\nconsole.<span class="hl-u">log</span>(data.<span class="hl-k">followers</span>.<span class="hl-k">count</span>)  <span class="hl-c">// 5843291</span>`
-  },
-  {
-    label: 'Python',
-    code: `<span class="hl-m">import</span> <span class="hl-k">requests</span>\n\n<span class="hl-k">res</span> = requests.<span class="hl-u">get</span>(<span class="hl-s">'https://your-domain.com/roblox/user/1/complete'</span>)\n<span class="hl-k">data</span> = res.<span class="hl-u">json</span>()\n\n<span class="hl-u">print</span>(data[<span class="hl-s">'user'</span>][<span class="hl-s">'name'</span>])  <span class="hl-c"># "Roblox"</span>`
-  }
-]
+function getCodeTabs() {
+  const d = window.location.origin
+  return [
+    {
+      label: 'cURL',
+      code: `<span class="hl-m">curl</span> <span class="hl-u">${d}/roblox/user/1/complete</span>\n\n<span class="hl-b">{</span>\n  <span class="hl-k">"user"</span>: <span class="hl-b">{</span> <span class="hl-k">"name"</span>: <span class="hl-s">"Roblox"</span>, <span class="hl-k">"id"</span>: <span class="hl-n">1</span> <span class="hl-b">}</span>,\n  <span class="hl-k">"presence"</span>: <span class="hl-b">{</span> <span class="hl-k">"type"</span>: <span class="hl-n">0</span> <span class="hl-b">}</span>,\n  <span class="hl-k">"followers"</span>: <span class="hl-b">{</span> <span class="hl-k">"count"</span>: <span class="hl-n">5843291</span> <span class="hl-b">}</span>\n<span class="hl-b">}</span>`
+    },
+    {
+      label: 'JavaScript',
+      code: `<span class="hl-m">const</span> <span class="hl-k">res</span> = <span class="hl-m">await</span> <span class="hl-u">fetch</span>(<span class="hl-s">'${d}/roblox/user/1/complete'</span>)\n<span class="hl-m">const</span> <span class="hl-k">data</span> = <span class="hl-m">await</span> res.<span class="hl-u">json</span>()\n\nconsole.<span class="hl-u">log</span>(data.<span class="hl-k">user</span>.<span class="hl-k">name</span>)  <span class="hl-c">// "Roblox"</span>\nconsole.<span class="hl-u">log</span>(data.<span class="hl-k">followers</span>.<span class="hl-k">count</span>)  <span class="hl-c">// 5843291</span>`
+    },
+    {
+      label: 'Python',
+      code: `<span class="hl-m">import</span> <span class="hl-k">requests</span>\n\n<span class="hl-k">res</span> = requests.<span class="hl-u">get</span>(<span class="hl-s">'${d}/roblox/user/1/complete'</span>)\n<span class="hl-k">data</span> = res.<span class="hl-u">json</span>()\n\n<span class="hl-u">print</span>(data[<span class="hl-s">'user'</span>][<span class="hl-s">'name'</span>])  <span class="hl-c"># "Roblox"</span>`
+    }
+  ]
+}
 
 const TECH_STACK = [
   { icon: <IconServer size={18} />, name: 'Node.js', desc: 'Runtime' },
@@ -206,7 +209,7 @@ export default function Landing() {
             </div>
           </Reveal>
           <Reveal delay={0.32}>
-            <CodeTab tabs={CODE_TABS} activeTab={activeTab} onTabChange={setActiveTab} />
+            <CodeTab tabs={getCodeTabs()} activeTab={activeTab} onTabChange={setActiveTab} />
           </Reveal>
         </div>
         <div className="scroll-hint">

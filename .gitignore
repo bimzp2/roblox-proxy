@@ -7,3 +7,6 @@ public/
 client/node_modules/
 client/dist/
 .gemini/
+
+.vercel
+.env*.local
