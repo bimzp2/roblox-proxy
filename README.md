@@ -180,6 +180,10 @@ vercel deploy --prod
 
 Or connect the GitHub repository at [vercel.com/new](https://vercel.com/new) for automatic deployments on push.
 
+## Preview
+
+https://roblox-proxy-nsvrgkzhy-bimawawoys-projects.vercel.app/
+
 ## License
 
 ISC
