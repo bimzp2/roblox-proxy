@@ -1,221 +1,185 @@
-# 🎮 Roblox Proxy API
+# UnixX Proxy
 
-API proxy sederhana untuk mengakses Roblox API dengan fitur caching dan rate limiting.
+High-performance Roblox API proxy with intelligent caching, rate limiting, and AI-powered chat integration. Built with Node.js, Express, and a modern React frontend.
 
-## ⚡ Quick Start
+## Features
+
+- **Unified API Gateway** -- Single endpoint for Roblox user data, avatars, social info, games, inventory, and catalog
+- **Smart Caching** -- In-memory caching with NodeCache to reduce redundant API calls and improve response times
+- **Rate Limiting** -- Configurable request throttling to prevent abuse and stay within Roblox API limits
+- **AI Chat** -- Integrated Groq-powered AI chat with message history support
+- **Full Scan** -- Deep data aggregation for universes and places in a single request
+- **Interactive Docs** -- Built-in API documentation with live endpoint testing
+- **SPA Frontend** -- Modern React UI with particle effects, smooth transitions, and responsive design
+
+## Tech Stack
+
+| Layer     | Technology             |
+|-----------|------------------------|
+| Runtime   | Node.js                |
+| Framework | Express 5              |
+| Cache     | NodeCache              |
+| HTTP      | Axios                  |
+| Frontend  | React + Vite           |
+| AI        | Groq API               |
+| Deploy    | Vercel                 |
+
+## Project Structure
+
+```
+roblox-proxy/
+  index.js                  # Entry point
+  vercel.json               # Vercel deployment config
+  src/
+    routes/
+      user.js               # /roblox/user/:id, /roblox/username/:username
+      avatar.js             # /roblox/avatar/:id, /roblox/avatar-headshot/:id
+      social.js             # /roblox/friends, /roblox/groups, /roblox/badges
+      inventory.js          # /roblox/inventory/:id/:type
+      game.js               # /roblox/game/:placeId, servers, gamepasses
+      catalog.js            # /roblox/catalog/search, /roblox/catalog/item/:id
+      scan.js               # /roblox/scan/universe, /roblox/scan/place
+      ai.js                 # /api/chat/ai
+      status.js             # /status, /api/endpoints
+    services/
+      roblox.js             # Axios wrapper for Roblox API calls
+      cache.js              # NodeCache configuration
+    middleware/
+      rateLimiter.js        # Express rate limiter
+    utils/
+      logger.js             # Morgan-based request logger
+  client/
+    src/
+      pages/
+        Landing.jsx         # Landing page with code previews
+        Docs.jsx            # Interactive API documentation
+      components/
+        Navbar.jsx           # Navigation bar
+        Particles.jsx        # Canvas particle system
+        Icons.jsx            # Centralized SVG icon components
+      hooks/
+        useAnimations.js     # Scroll reveal and counter hooks
+        useMousePosition.js  # Mouse position tracking
+      styles/
+        global.css           # Design tokens and base styles
+```
+
+## API Endpoints
+
+### User
+```
+GET /roblox/user/:id                    # User profile
+GET /roblox/user/:id/complete           # Full profile with presence, followers, badges, groups
+GET /roblox/username/:username          # Lookup by username
+```
+
+### Avatar
+```
+GET /roblox/avatar/:id                  # Full body thumbnail
+GET /roblox/avatar-headshot/:id         # Headshot thumbnail
+```
+
+### Social
+```
+GET /roblox/friends/:id                 # Friends list
+GET /roblox/groups/:id                  # Groups and roles
+GET /roblox/badges/:id                  # User badges
+GET /roblox/user/:id/badges/awarded-dates?badgeIds=1,2,3
+```
+
+### Inventory
+```
+GET /roblox/inventory/:id/:type         # By asset type ID (8=Hat, 11=Shirt, etc.)
+```
+
+### Game
+```
+GET /roblox/game/:placeId               # Game info with votes and favorites
+GET /roblox/game/:placeId/servers       # Server list
+GET /roblox/universe/:id/gamepasses     # Game passes
+GET /roblox/universe/:id/dev-products   # Developer products
+GET /roblox/universe/:id/badges         # Universe badges
+GET /roblox/user/:userId/gamepass/:gamePassId/ownership
+GET /roblox/user/:userId/universe/:universeId/gamepasses-owned
+```
+
+### Catalog
+```
+GET /roblox/catalog/search?keyword=...  # Search catalog
+GET /roblox/catalog/item/:itemId        # Item details by asset ID
+```
+
+### Scan
+```
+GET /roblox/scan/universe/:universeId   # Full universe data aggregation
+GET /roblox/scan/place/:placeId         # Full place data with servers
+```
+
+### AI Chat
+```
+POST /api/chat/ai                       # Chat with message history
+GET  /api/chat/ai/:msg                  # Quick message
+```
+
+### Status
+```
+GET /status                             # Health check with cache stats
+GET /cache/clear                        # Clear all cache
+GET /api/endpoints                      # List all endpoints with metadata
+```
+
+## Setup
+
+### Prerequisites
+- Node.js 18+
+- npm
+
+### Installation
 
 ```bash
-# Install dependencies
-npm install
-
-# Setup environment
-cp .env.example .env
-# Edit .env dan tambahkan GROQ_API_KEY untuk fitur AI
-
-# Run server
-npm start
+git clone https://github.com/bimzp2/roblox-proxy.git
+cd roblox-proxy
+npm run install:all
 ```
 
-Server berjalan di `http://localhost:3000`
+### Environment Variables
 
----
-
-## 📁 Project Structure
+Create a `.env` file in the root directory:
 
 ```
-src/
-├── app.js           # Express app setup
-├── server.js        # Entry point
-├── config/          # Configuration
-├── middleware/      # Logger, error handler, rate limiter
-├── services/        # Cache & Roblox API client
-├── routes/          # Endpoint per fitur
-└── utils/           # Helper functions
-```
-
----
-
-## 🔗 API Endpoints
-
-### 👤 User
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/roblox/user/:id` | Get user by ID |
-| GET | `/roblox/user/:id/complete` | Get complete user data |
-| GET | `/roblox/username/:username` | Get user by username |
-
-**Example:**
-```bash
-curl http://localhost:3000/roblox/user/1
-curl http://localhost:3000/roblox/username/Roblox
-```
-
----
-
-### 🖼️ Avatar
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/roblox/avatar/:id` | Get full avatar |
-| GET | `/roblox/avatar-headshot/:id` | Get headshot |
-
-**Query Params:**
-- `size` - Image size (default: 720x720 / 420x420)
-- `circular` - Circular avatar (true/false)
-
-**Example:**
-```bash
-curl "http://localhost:3000/roblox/avatar/1?size=420x420&circular=true"
-```
-
----
-
-### 👥 Social
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/roblox/friends/:id` | Get user friends |
-| GET | `/roblox/groups/:id` | Get user groups |
-| GET | `/roblox/badges/:id` | Get user badges |
-| GET | `/roblox/user/:userId/badges/awarded-dates` | Get badge awarded dates |
-
-**Example:**
-```bash
-curl http://localhost:3000/roblox/friends/1
-curl "http://localhost:3000/roblox/badges/1?limit=10"
-```
-
----
-
-### 📦 Inventory
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/roblox/inventory/:id/:type` | Get user inventory by type |
-
-**Asset Types:** `Asset`, `GamePass`, `Badge`, `Bundle`
-
-**Example:**
-```bash
-curl http://localhost:3000/roblox/inventory/1/Asset
-```
-
----
-
-### 🎮 Game
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/roblox/game/:placeId` | Get game info |
-| GET | `/roblox/game/:placeId/servers` | Get game servers |
-| GET | `/roblox/universe/:universeId/gamepasses` | Get game passes |
-| GET | `/roblox/universe/:universeId/dev-products` | Get dev products |
-| GET | `/roblox/universe/:universeId/badges` | Get universe badges |
-| GET | `/roblox/user/:userId/gamepass/:gamePassId/ownership` | Check gamepass ownership |
-| GET | `/roblox/user/:userId/universe/:universeId/gamepasses-owned` | Get owned game passes |
-
-**Example:**
-```bash
-curl http://localhost:3000/roblox/game/1818
-curl http://localhost:3000/roblox/universe/13058/gamepasses
-```
-
----
-
-### 🛒 Catalog
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/roblox/catalog/search` | Search catalog |
-| GET | `/roblox/catalog/item/:itemId` | Get item details |
-
-**Query Params:**
-- `keyword` - Search keyword
-- `category` - Category filter
-- `limit` - Max results (default: 60)
-
-**Example:**
-```bash
-curl "http://localhost:3000/roblox/catalog/search?keyword=hat"
-```
-
----
-
-### 🔍 Scan
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/roblox/scan/universe/:universeId` | Full universe scan |
-| GET | `/roblox/scan/place/:placeId` | Full place scan |
-
-Scan endpoints return comprehensive data including game info, votes, favorites, gamepasses, dev products, badges, and active servers.
-
-**Example:**
-```bash
-curl http://localhost:3000/roblox/scan/place/1818
-```
-
----
-
-### 🤖 AI Chat
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/chat/ai` | Full AI chat control |
-| GET | `/api/chat/ai/:msg` | Quick AI message |
-
-**POST Body:**
-```json
-{
-  "messages": [{"role": "user", "content": "Hello!"}],
-  "temperature": 0.7,
-  "max_tokens": 1024
-}
-```
-
-**Example:**
-```bash
-curl http://localhost:3000/api/chat/ai/Hello
-```
-
----
-
-### 📊 Status
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/status` | Health check & cache stats |
-| GET | `/cache/clear` | Clear all cache |
-
-**Example:**
-```bash
-curl http://localhost:3000/status
-```
-
----
-
-## ⚙️ Configuration
-
-Environment variables (`.env`):
-
-```env
 PORT=3000
+NODE_ENV=production
 GROQ_API_KEY=your_groq_api_key
 ```
 
----
-
-## 🚀 Deploy to Vercel
-
-Project sudah siap deploy ke Vercel:
+### Development
 
 ```bash
-vercel
+npm run dev
 ```
 
----
+The backend runs on `http://localhost:3000`. The frontend dev server runs separately:
 
-## 📝 License
+```bash
+cd client
+npm run dev
+```
+
+### Production Build
+
+```bash
+npm run build:client
+npm start
+```
+
+### Deploy to Vercel
+
+```bash
+vercel deploy --prod
+```
+
+Or connect the GitHub repository at [vercel.com/new](https://vercel.com/new) for automatic deployments on push.
+
+## License
 
 ISC
